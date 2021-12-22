@@ -6,10 +6,12 @@ Follow-along with the C# Fundamentals Course from PluralSight
 
 Running: `dotnet run --project src/GradeBook/`
 
-Testing: `cd test/GradeBook.Tests/ && dotnet test && cd -`
+Testing: `dotnet test`
 
 ## Notes
 
 When writing test cases, had to reference main GradeBook project with `dotnet add reference ../../src/GradeBook/`, which updated `GradeBook.Tests.csproj`
 
 A `solution` can hold multiple `projects`, which can hold multiple `namespaces`
+
+Create a solution: `dotnet new sln && dotnet sln add src/GradeBook/GradeBook.csproj && dotnet sln add test/GradeBook.Tests/GradeBook.Tests.csproj`
