@@ -4,10 +4,10 @@ using System.Collections.Generic;
 namespace GradeBook{
     public class Book {
         private List<double> grades;
-        private string name;
+        public string Name;
         public Book(string name){
             this.grades = new List<double>();
-            this.name = name;
+            this.Name = name;
         }
 
         public Statistics GetStatistics()
@@ -32,7 +32,7 @@ namespace GradeBook{
         }
 
         public override string ToString(){
-            return $"{name}'s GradeBook holds {grades.Count} grades.";
+            return $"{Name}'s GradeBook holds {grades.Count} grades.";
         }
     }
 }
