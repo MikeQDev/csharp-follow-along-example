@@ -28,6 +28,8 @@ namespace GradeBook{
         }
 
         public void AddGrade(double grade){
+            if(grade < 0)
+                throw new ArgumentException($"Bad grade: '{grade}'");
             this.grades.Add(grade);
         }
 
