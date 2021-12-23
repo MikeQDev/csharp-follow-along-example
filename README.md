@@ -17,3 +17,5 @@ A `solution` can hold multiple `projects`, which can hold multiple `namespaces`
 Create a solution: `dotnet new sln && dotnet sln add src/GradeBook/GradeBook.csproj && dotnet sln add test/GradeBook.Tests/GradeBook.Tests.csproj`
 
 `struct` types is a value type (bool, int, etc.), classes as reference type
+
+Private variables start with lowercase, public variables start with uppercase

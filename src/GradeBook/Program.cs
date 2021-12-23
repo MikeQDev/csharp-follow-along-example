@@ -7,7 +7,13 @@ namespace GradeBook
     {
         static void Main(string[] args)
         {
-            var book = new Book("My grade book");
+            Book book = null;
+            try{
+                book = new Book("xyz");
+            }catch(ArgumentException){
+                Console.WriteLine("Bad book name entered; ensure 0 < name.Length <= 10 ");
+                Environment.Exit(5);
+            }
             Console.WriteLine("Enter grades, separated by Enter, followed by 'Done' when complete:");
             while(true){
                 var grade = Console.ReadLine();
@@ -15,9 +21,9 @@ namespace GradeBook
                   break;
                 try{
                     book.AddGrade(double.Parse(grade));
-                }catch(ArgumentException e){
+                }catch(ArgumentException){
                     Console.WriteLine("Unacceptable grade; skipping");
-                }catch(FormatException e){
+                }catch(FormatException){
                     Console.WriteLine("That doesn't look like a grade; skipping");
                 }
             }
