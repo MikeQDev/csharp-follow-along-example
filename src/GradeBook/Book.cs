@@ -1,14 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace GradeBook{
 
-    public delegate void GradeAddedDelegate(object sender, EventArgs args); // a double works here as the args as well,
-    // I think EventArgs is mean to be a superclass of custom classes that will contain data to be emitted, or used simply to represent events without values
-    public class Book {
-        private List<double> grades;
-        readonly string subject; // readonly can only be set in constructor, nowhere else
-        public const string CAN_NEVER_BE_CHANGED = "xyz";
+    public class NamedObject{
         private string name; // field
         public string Name { // property
             get {
@@ -21,33 +17,88 @@ namespace GradeBook{
                 this.name = value;
             }
         }
-        public event GradeAddedDelegate GradeAdded; // event ensures you can only use += or -=, no reassignment, because it may affect others listening
-
-        public Book(string name){
-            this.grades = new List<double>();
+        public NamedObject(string name){
             this.Name = name;
+        }
+    }
+
+    public interface IBook {
+        void AddGrade(double grade);
+        Statistics GetStatistics();
+        string Name { get; }
+        event GradeAddedDelegate GradeAdded;
+    }
+
+    public abstract class Book : NamedObject, IBook {
+        public Book(string name) : base(name) {
+        }
+
+        public abstract event GradeAddedDelegate GradeAdded;
+        public abstract void AddGrade(double grade);
+        public abstract Statistics GetStatistics();
+    }
+
+    public delegate void GradeAddedDelegate(object sender, EventArgs args); // a double works here as the args as well,
+    // I think EventArgs is mean to be a superclass of custom classes that will contain data to be emitted, or used simply to represent events without values
+
+    public class DiskBook : Book
+    {
+        public DiskBook(string name) : base(name)
+        {
+        }
+
+        public override event GradeAddedDelegate GradeAdded;
+
+        public override void AddGrade(double grade)
+        {
+            if(grade < 0)
+                throw new ArgumentException($"Bad grade: '{grade}'");
+            // since the stream implements IDisposable, GC will clean up for us
+            using( StreamWriter file = new($"./{Name}.gradebook", append: true)){
+              file.WriteLine(grade);
+            }
+            if(GradeAdded != null)
+              GradeAdded(this, new EventArgs());
+        }
+
+        public override Statistics GetStatistics()
+        {
+            var stats = new Statistics();
+            using(StreamReader file = new($"./{Name}.gradebook")){
+                while(true){
+                    var line = file.ReadLine();
+                    if(line == null)
+                      break;
+                    var value = double.Parse(line);
+                    stats.AddGrade(value);
+                }
+            }
+            return stats;
+        }
+    }
+
+    public class MemoryBook : Book {
+        private List<double> grades;
+        readonly string subject; // readonly can only be set in constructor, nowhere else
+        public const string CAN_NEVER_BE_CHANGED = "xyz";
+        public override event GradeAddedDelegate GradeAdded; // event ensures you can only use += or -=, no reassignment, because it may affect others listening
+
+        public MemoryBook(string name) : base(name) {
+            this.grades = new List<double>();
             this.subject = "CS";
             this.subject = "CSX";
         }
 
-        public Statistics GetStatistics()
+        public override Statistics GetStatistics()
         {
-            var result = new Statistics();
-            result.Average = 0.0;
-            result.Low = double.MaxValue;
-            result.High = double.MinValue;
-
+            var stats = new Statistics();
             foreach(var grade in grades){
-                result.Low = Math.Min(result.Low, grade);
-                result.High = Math.Max(result.High, grade);
-                result.Average += grade;
+                stats.AddGrade(grade);
             }
-
-            result.Average /= this.grades.Count;
-            return result;
+            return stats;
         }
 
-        public void AddGrade(double grade){
+        public override void AddGrade(double grade){
             if(grade < 0)
                 throw new ArgumentException($"Bad grade: '{grade}'");
             this.grades.Add(grade);

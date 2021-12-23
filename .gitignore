@@ -1,3 +1,5 @@
+*.gradebook
+
 *.swp
 *.*~
 project.lock.json

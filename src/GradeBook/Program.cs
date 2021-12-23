@@ -10,16 +10,24 @@ namespace GradeBook
             new Program();
         }
         private Program(){
-            Book book = null;
+            IBook book = null;
             try{
-                book = new Book("xyz");
+                book = new DiskBook("xyz");
             }catch(ArgumentException){
                 Console.WriteLine("Bad book name entered; ensure 0 < name.Length <= 10 ");
                 Environment.Exit(5);
             }
-            book.GradeAdded += OnGradeAdded;
-            book.GradeAdded -= OnGradeAdded;
-            book.GradeAdded += OnGradeAdded;
+            book.GradeAdded += OnGradeAdded; // subcribe
+            book.GradeAdded -= OnGradeAdded; // unsubcribe
+            book.GradeAdded += OnGradeAdded; // subcribe
+            addGrades(book);
+            Console.WriteLine(book);
+            var stats = book.GetStatistics();
+            Console.WriteLine($"Stats -> Low: {stats.Low}, High: {stats.High}, Avg: {stats.Average}");
+        }
+
+        private void addGrades(IBook book)
+        {
             Console.WriteLine("Enter grades, separated by Enter, followed by 'Done' when complete:");
             while(true){
                 var grade = Console.ReadLine();
@@ -33,10 +41,8 @@ namespace GradeBook
                     Console.WriteLine("That doesn't look like a grade; skipping");
                 }
             }
-            Console.WriteLine(book);
-            var stats = book.GetStatistics();
-            Console.WriteLine($"Stats -> Low: {stats.Low}, High: {stats.High}, Avg: {stats.Average}");
         }
+
         private void OnGradeAdded(object sender, EventArgs events){
             Console.WriteLine($"New grade added.");
         }

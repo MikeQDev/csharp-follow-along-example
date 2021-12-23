@@ -19,3 +19,5 @@ Create a solution: `dotnet new sln && dotnet sln add src/GradeBook/GradeBook.csp
 `struct` types is a value type (bool, int, etc.), classes as reference type
 
 Private variables start with lowercase, public variables start with uppercase
+
+Instead of explicitly closing streams that implement IDisposable, wrap them in a using block like so: `using(StreamReader file = new($"./{Name}.gradebook")){ ... }` ; GC will clean the resource once execution leaves the scope

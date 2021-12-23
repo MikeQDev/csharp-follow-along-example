@@ -50,30 +50,30 @@ namespace GradeBook.Tests
 
         [Fact]
         public void CanPassByRef(){
-            var book2 = new Book("initial");
+            var book2 = new MemoryBook("initial");
             GetBookSetNameByRef(ref book2,"aaah");
             Assert.Equal("AAAH",book2.Name);
         }
-        private void GetBookSetNameByRef(ref Book book, string name){
+        private void GetBookSetNameByRef(ref MemoryBook book, string name){
             // also can use out instead of ref, to enforce initialization of param
-            book = new Book(name);
+            book = new MemoryBook(name);
         }
         
         [Fact]
         public void CanPassByValueByDefault(){
-            var book2 = new Book("initial");
+            var book2 = new MemoryBook("initial");
             GetBookSetName(book2,"aaah");
             Assert.Equal("INITIAL",book2.Name);
         }
-        private void GetBookSetName(Book book, string name){
-            book = new Book(name);
+        private void GetBookSetName(MemoryBook book, string name){
+            book = new MemoryBook(name);
         }
 
         [Fact]
         public void CanCreateBook()
         {
-            var book1 = new Book("book1");
-            var book2 = new Book("book2");
+            var book1 = new MemoryBook("book1");
+            var book2 = new MemoryBook("book2");
             Assert.Equal("BOOK1", book1.Name);
             Assert.Equal("BOOK2", book2.Name);
             Assert.NotSame(book1,book2);
@@ -81,7 +81,7 @@ namespace GradeBook.Tests
         [Fact]
         public void TwoVarsRefSameObject()
         {
-            var book1 = new Book("book1");
+            var book1 = new MemoryBook("book1");
             var book2 = book1;
             Assert.Same(book1,book2);
             Assert.True(Object.ReferenceEquals(book1,book2));
