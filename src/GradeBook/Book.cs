@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 
 namespace GradeBook{
+
+    public delegate void GradeAddedDelegate(object sender, EventArgs args); // a double works here as the args as well,
+    // I think EventArgs is mean to be a superclass of custom classes that will contain data to be emitted, or used simply to represent events without values
     public class Book {
         private List<double> grades;
         readonly string subject; // readonly can only be set in constructor, nowhere else
@@ -18,6 +21,7 @@ namespace GradeBook{
                 this.name = value;
             }
         }
+        public event GradeAddedDelegate GradeAdded; // event ensures you can only use += or -=, no reassignment, because it may affect others listening
 
         public Book(string name){
             this.grades = new List<double>();
@@ -47,6 +51,8 @@ namespace GradeBook{
             if(grade < 0)
                 throw new ArgumentException($"Bad grade: '{grade}'");
             this.grades.Add(grade);
+            if(GradeAdded != null)
+                GradeAdded(this,new EventArgs());
         }
 
         public override string ToString(){

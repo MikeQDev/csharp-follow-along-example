@@ -3,8 +3,29 @@ using Xunit;
 
 namespace GradeBook.Tests
 {
+    public delegate string MyDelegate(string foo); // signature and return type must always match
     public class TypeTests
     {
+
+        [Fact]
+        public void CanUseMulticastDelegate(){
+            MyDelegate myDelegate = changeString;
+            myDelegate+=changeStringLower;
+            Assert.Equal("hello",myDelegate("hello"));
+        }
+
+        [Fact]
+        public void CanUseDelegate(){
+            MyDelegate myDelegate = changeString;
+            Assert.Equal("HELLO",myDelegate("hello"));
+        }
+
+        private string changeString(string bar){
+            return bar.ToUpper();
+        }
+        private string changeStringLower(string bar){
+            return bar.ToLower();
+        }
 
         [Fact]
         public void CanSetIntAsRef(){
